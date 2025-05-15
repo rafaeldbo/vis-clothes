@@ -9,3 +9,7 @@ tensorflow
 keras
 ipykernel
 tqdm
+
+albumentations
+iglovikov-helper-functions
+cloths-segmentation
