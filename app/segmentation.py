@@ -157,8 +157,8 @@ def cloth_segmentation_batch(
         white_pixels = np.argwhere(mask != 0)
 
         if len(white_pixels) == 0:
-            segmented_images[i] = preprocessed_images[i]
-            print(f"Warning: No white pixels found in image {i}, keeping original image.")
+            segmented_images[i] = images[i]
+            print(f"Warning: No white pixels found in mask of image {i}, keeping original image.")
         else:
             y_min, x_min = white_pixels.min(axis=0)
             y_max, x_max = white_pixels.max(axis=0)

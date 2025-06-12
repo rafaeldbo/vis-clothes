@@ -34,7 +34,7 @@ DETAILS_LABELS = [
 ]
 
 # Tamanho da imagem de entrada para o modelo de cor e estampa
-COLOR_IMG_SIZE = (64, 64) 
+IMG_SIZE = (64, 64) 
 
 # Carregando os modelos
 ## Modelo para classificação por cor
@@ -50,14 +50,14 @@ details_model = torch.jit.load("./models/jit_model_detail_6.pt")
 ## Compose para modelo de classificação por cor
 color_transform = transforms.Compose([
   transforms.ToTensor(),
-  transforms.Resize(COLOR_IMG_SIZE),
+  transforms.Resize(IMG_SIZE),
   transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
 ])
 
 ## Compose para modelo de classificação por estampa
 details_transform = transforms.Compose([
-    transforms.Resize(COLOR_IMG_SIZE),
-    transforms.ToTensor()
+    transforms.ToTensor(),
+    transforms.Resize(IMG_SIZE),
 ])
 
 
