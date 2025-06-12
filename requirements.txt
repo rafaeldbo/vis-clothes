@@ -10,6 +10,8 @@ keras
 ipykernel
 tqdm
 
+fastapi[standard]
+
 albumentations
 iglovikov-helper-functions
 cloths-segmentation
