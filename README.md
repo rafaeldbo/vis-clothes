@@ -22,7 +22,8 @@ Aplicação web que recebe a foto de uma roupa e retorna sua classificação de 
 - Acurácia: 67%
 
 ## Classificação de estampas
--
+- Treinamento e teste feitos no arquivo **
+- Acurácia: 
 
 ### Classificação de categorias
 - Treinamento e teste feitos no aquivo *categories_model.ipynb*.
@@ -42,12 +43,16 @@ pip install -r requirements.txt
 ```
 fastapi run app/main.py
 ```
-O backend estará disponível em http://localhost:8000
+- O backend estará disponível em http://localhost:8000
 
 ## Rodando o Frontend
 
-O repositório do frontend da aplicação está disponível [aqui](https://github.com/ellencoutinho/vis-clothes-front). As instruções para rodar a aplicação está no README do repositório.
+- O repositório do frontend da aplicação está disponível [aqui](https://github.com/ellencoutinho/vis-clothes-front). 
 
-Seguindo as instruções a página estará disponível em http://localhost:5173.
+- As instruções para rodar a aplicação está no README do repositório.
 
-O zip submetido na página deve ser um **zip com imagens** (um **zip com uma pasta de imagens** por exemplo não será aceito)
+- Seguindo as instruções a página estará disponível em http://localhost:5173.
+
+## Observações
+
+- O zip submetido na página deve ser um **zip com imagens** (um **zip com uma pasta de imagens** por exemplo não será aceito)
