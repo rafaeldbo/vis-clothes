@@ -22,8 +22,10 @@ Aplicação web que recebe a foto de uma roupa e retorna sua classificação de 
 - Acurácia: 67%
 
 ### Classificação de estampas
-- Treinamento e teste feitos no arquivo **
-- Acurácia: 
+- Treinamento e teste feitos no arquivo *model_torch.ipynb*
+- Acurácia: 79%
+
+Para treinar o modelo, foi utilizado o CSV para 6 categorias de estampa, porém, os três arquivos foram utilizados no notebook para comparação das métricas para cada modelo.
 
 ### Classificação de categorias
 - Treinamento e teste feitos no aquivo *categories_model.ipynb*.
