@@ -29,6 +29,14 @@ Aplicação web que recebe a foto de uma roupa e retorna sua classificação de 
 - Treinamento e teste feitos no aquivo *categories_model.ipynb*.
 - Acurácia: 63%
 
+### Trocando um modelo no backend
+
+É possível trocar o modelo utilizado pela aplicação alterando o arquivo *clothes_models* que se encontra na pasta *app*.
+
+Com o modelo salvo na pasta *models*, altere o nome do arquivo passado na função *torch.jit.load* da variável correspondente (*color_model*, *detail_model* ou *category model*).
+
+As variáveis *IMG_SIZE*, *COLOR_LABELS*, *CATEGORY_LABELS*, *DETAILS_LABELS*, *color_transform*, *details_transform* e *category_transform*, estão alinhadas com as categorias e formato de imagem utilizadas no treinamento dos modelos. Pode ser necessário atualizar algumas dessas variáveis ao trocar um ou mais modelos utilizados.
+
 ## Acessando e utilizando a página
 
 ### Rodando o backend
@@ -49,7 +57,7 @@ fastapi run app/main.py
 
 - O repositório do frontend da aplicação está disponível [aqui](https://github.com/ellencoutinho/vis-clothes-front). 
 
-- As instruções para rodar a aplicação está no README do repositório.
+- Após clonar o repositório sigas as instruções do README.
 
 - Seguindo as instruções a página estará disponível em http://localhost:5173.
 
