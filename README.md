@@ -21,7 +21,7 @@ Aplicação web que recebe a foto de uma roupa e retorna sua classificação de 
 - Treinamento e teste feitos no arquivo *train_color_model.ipynb*
 - Acurácia: 67%
 
-## Classificação de estampas
+### Classificação de estampas
 - Treinamento e teste feitos no arquivo **
 - Acurácia: 
 
@@ -45,7 +45,7 @@ fastapi run app/main.py
 ```
 - O backend estará disponível em http://localhost:8000
 
-## Rodando o Frontend
+### Rodando o Frontend
 
 - O repositório do frontend da aplicação está disponível [aqui](https://github.com/ellencoutinho/vis-clothes-front). 
 
