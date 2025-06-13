@@ -5,8 +5,6 @@ seaborn
 opencv-python
 pillow
 scikit-learn
-tensorflow
-keras
 ipykernel
 tqdm
 
