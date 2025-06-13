@@ -20,11 +20,9 @@ COLOR_LABELS = [
 
 ## Categoria
 CATEGORY_LABELS = [
-    'Blouses', 'Dresses', 'Tops',
-    'Trousers', 'Blazers', 'Knitwear',
-    'Shirts', 'Coats', 'Jumpsuits',
-    'Jackets', 'Skirts', 'Sweaters',
-    'Vests', 'Cardigans', 'Shorts'
+    'Blouses','Dresses','Jumpsuits',
+    'Skirts','Pullovers','Tops',
+    'Coats','Trousers','Shirts', 'Shorts'
 ]
 
 ## Estampa
@@ -44,7 +42,7 @@ color_model = torch.jit.load("./models/jit_model_color_66.pt")
 details_model = torch.jit.load("./models/jit_model_detail_6.pt")
 
 ## Modelo para classificação por categoria
-# category_model = torch.jit.load("./models/<nome_do_arquivo>.pt")
+category_model = torch.jit.load("./models/model_categories.pt")
 
 # Criando objetos Compose para os modelos
 ## Compose para modelo de classificação por cor
@@ -56,6 +54,13 @@ color_transform = transforms.Compose([
 
 ## Compose para modelo de classificação por estampa
 details_transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Resize(IMG_SIZE),
+])
+
+## Compose para modelo de classificação por categoria
+category_transform = transforms.Compose([
+    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor(),
     transforms.Resize(IMG_SIZE),
 ])
@@ -73,8 +78,14 @@ def apply_color_model(images: List[Tensor], device: str = "cpu") -> List[str]:
 
 
 def apply_category_model(images: List[Tensor], device: str = "cpu") -> List[str]:
-    # Placeholder for category model application
-    return [np.random.choice(CATEGORY_LABELS) for _ in images]
+    category_model.to(device).eval()
+
+    batch_tensor = torch.stack([category_transform(img) for img in images]).to(device)
+    with torch.no_grad():
+        category_results = category_model(batch_tensor).cpu().numpy()
+        pred_categories = np.argmax(category_results, axis=1)
+
+    return [CATEGORY_LABELS[category] for category in pred_categories]
 
 
 def apply_detail_model(images: List[Tensor], device: str = "cpu") -> List[str]:
