@@ -60,9 +60,9 @@ details_transform = transforms.Compose([
 
 ## Compose para modelo de classificação por categoria
 category_transform = transforms.Compose([
-    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor(),
     transforms.Resize(IMG_SIZE),
+    transforms.Grayscale()
 ])
 
 
