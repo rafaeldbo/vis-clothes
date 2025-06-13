@@ -88,7 +88,7 @@ def apply_detail_model(images: List[Tensor], device: str = "cpu") -> List[str]:
     return [DETAILS_LABELS[detail] for detail in pred_details]
 
 
-def apply_cloth_models(images:List[np.ndarray], size:float=1, device:str="cpu") -> List[Dict[str, str]]:
+def apply_cloth_models(images:List[np.ndarray], size:int=512, device:str="cpu") -> Tuple[List[Dict[str, str]], List[np.ndarray]]:
     print(f"Preprocessing images...")
     preprocessed_images = cloth_segmentation_batch(images, size, device)
     
@@ -97,7 +97,7 @@ def apply_cloth_models(images:List[np.ndarray], size:float=1, device:str="cpu") 
     pred_categories = apply_category_model(preprocessed_images, device)
     pred_details = apply_detail_model(preprocessed_images, device)
     
-    return [{'color': color, 'category': category, 'detail': detail} 
+    classifications = [{'color': color, 'category': category, 'detail': detail} 
                 for color, category, detail in zip(pred_colors, pred_categories, pred_details)]
     
-    
+    return classifications, preprocessed_images

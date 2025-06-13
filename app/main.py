@@ -1,6 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-import zipfile, io
+import zipfile, io, os
 import numpy as np
 import cv2
 
@@ -15,12 +15,16 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todos os cabeçalhos
 )
 
+PATH = os.path.dirname(os.path.abspath(__file__))
+SAVE_PATH = os.path.join(PATH, "processed_images")
+if not os.path.exists(SAVE_PATH):
+    os.makedirs(SAVE_PATH)
+
 @app.post("/zip")
 async def upload_zip(zipFile: UploadFile = File(...)):
     images = []
     filenames = []
 
-    # Ler o arquivo ZIP em memória
     with zipfile.ZipFile(io.BytesIO(await zipFile.read()), "r") as zip_ref:
         for file_name in zip_ref.namelist():
             if file_name.endswith((".png", ".jpg", ".jpeg")):
@@ -30,8 +34,17 @@ async def upload_zip(zipFile: UploadFile = File(...)):
                     images.append(image)
                     filenames.append(file_name)
 
-    classifications = apply_cloth_models(images, 0.5)
-    return {"results": {filename: classification for filename, classification in zip(filenames, classifications)}}
+    cloth_data, processed_images = apply_cloth_models(images)
+    
+    # Salva as imagens processadas para vizualização
+    # for filename, image in zip(filenames, processed_images):
+    #     filepath = os.path.join(SAVE_PATH, filename)
+    #     if not cv2.imwrite(filepath, image):
+    #         print(f"Error saving image {filename}")
+    #         if os.path.exists(filepath):
+    #             os.remove(filepath)
+    
+    return {"results": {filename: data for filename, data in zip(filenames, cloth_data)}}
 
 
 

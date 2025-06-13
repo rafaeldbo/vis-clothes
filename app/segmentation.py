@@ -115,27 +115,55 @@ def resize_image(
                             pad_top, pad_bottom, pad_left, pad_right, 
                             cv2.BORDER_CONSTANT, value=(255, 255, 255))
 
+def compact_images(
+    images: List[np.ndarray],
+    size: int,
+) -> List[np.ndarray]:
+    """
+    Campacta as imagens para uma fração do tamanho da maior imagem recebida, mantendo a proporção.
+    Args:
+        images (List[np.ndarray]): Lista de imagens a serem compactadas.
+        size (float): Fator de compactação, deve estar entre 0 e 1.
+    Returns:
+        List[np.ndarray]: Lista de imagens compactadas.
+    """
+    if not images:
+        return []
+    if size < 0:
+        raise ValueError("O parâmetro 'size' ser maior que 0")
+    
+    resized_images = []
+    for img in images:
+        h, w = img.shape[:2]
+        if h < size and w < size:
+            resized_images.append(img)
+            continue
+        # Determina fator de escala baseado na maior dimensão
+        scale = min(size / h, size / w)
+        new_size = (int(w * scale), int(h * scale))
+        img = cv2.resize(img, new_size, interpolation=cv2.INTER_LINEAR)
+        resized_images.append(img)
+    return resized_images
 
 def cloth_segmentation_batch(
     images: List[np.ndarray], 
-    size: Union[float]=1, 
+    size: int=512, 
     device: str="cpu",
 ) -> List[Union[np.ndarray, None]]:
     
     if (n := len(images)) == 0:
         return []
 
-    # Redimensiona as imagens se o tamanho for especificado mantendo a proporção
-    if size > 0 and size < 1:
-        images = [cv2.resize(img, (int(img.shape[1] * size), int(img.shape[0] * size)), interpolation=cv2.INTER_LINEAR) for img in images]
-    # descobre o tamanho da maior imagem (esse será o tamanho de entrada do modelo)
-    in_size = reduce(lambda size, img: (max(size[0], img.shape[0]), max(size[1], img.shape[1])), images, (0, 0))
+    # compacta as imagens para o tamanho especificado, mantendo a proporção
+    resize_images = compact_images(images, size)
+    # descobre o tamanho da maior imagem (esse será o tamanho de entrada do modelo de segmentação)
+    in_size = reduce(lambda size, img: (max(size[0], img.shape[0]), max(size[1], img.shape[1])), resize_images, (0, 0))
      
     preprocessed_images = [None]*n
     pads_list = [None]*n
 
     # Aplica o padding (exigência do modelo de segmentação) e a transformação inicial em cada imagem
-    for i, img in enumerate(images):
+    for i, img in enumerate(resize_images):
         padded_image, pads_list[i] = pad_image(img, factor=32, min_size=in_size)
         preprocessed_images[i] = initial_transform(padded_image)
 
@@ -157,14 +185,14 @@ def cloth_segmentation_batch(
         white_pixels = np.argwhere(mask != 0)
 
         if len(white_pixels) == 0:
-            segmented_images[i] = images[i]
+            segmented_images[i] = resize_images[i]
             print(f"Warning: No white pixels found in mask of image {i}, keeping original image.")
         else:
             y_min, x_min = white_pixels.min(axis=0)
             y_max, x_max = white_pixels.max(axis=0)
             
             # corta a imagem para remover o fundo desnecessário
-            cropped_image = images[i][y_min:y_max, x_min:x_max] 
+            cropped_image = resize_images[i][y_min:y_max, x_min:x_max] 
             cropped_mask = mask[y_min:y_max, x_min:x_max]
             
             # remove o fundo da imagem original usando a máscara segmentada
